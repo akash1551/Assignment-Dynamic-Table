@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Table </title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+</head>
+
+
+<body  ng-app="myApp" ng-controller="myCtrl">
+
+
+	<div class="container-fluid">
+		<div class="container">
+			<div class="row">
+			<h4 style="text-align: center">Enter column numbers to display</h4>
+			<input type="text" class="form-control" placeholder="Enter Number of Column to display " style="max-width: 300px; margin: auto; height: 45px; border-radius: 0px;" ng-model="columnLimit" > <br>
+				<div class="col-sm-2" ng-repeat="i in data.employees track by $index" style="border: 1px solid #1b95e0; height: 40vh; padding: 0px; ">
+					<div style="margin: 0px 1px; background-color: #4D90FE; padding: 10px;">
+						<span style=" color: #FFF;">{{i.id}} | {{i.firstName}}</span>
+						<span class="pull-right" ng-click="closedTab($index, i)" style="cursor: pointer; cursor: hand; font-weight: bold;">
+							<i class="fa fa-close fa-fw" style="color: #FFF"></i>
+						</span>
+					</div>
+
+				</div>
+				<div style="width: 30px; background-color: #bebebe;  display: inline-block; padding: 10px;" ng-if="closedTabList.length">
+					<p ng-repeat="i in closedTabList" ng-click="recoverTab(i)" style="cursor: pointer; cursor: hand">{{i.id}} <br></p>
+				</div>
+
+
+				<div class="col-sm-12" style="margin-top: 20px;">
+					<h3>Row Data -- To Be Rendered</h3>
+					<p>{{data}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script>
+		var app = angular.module('myApp', []);
+
+		app.controller('myCtrl', function($scope, $timeout){
+			console.log("lorem");
+			$scope.columnLimit = 5;
+
+			$scope.init = function(){
+				$scope.processList();
+			}
+			$timeout($scope.init);
+
+			$scope.$watch('columnLimit', function(){
+				$scope.closedTabList = [];
+				$scope.data = {"employees":[
+						    {id: '1',"firstName":"John", "lastName":"Doe"},
+						    {id: '2',"firstName":"Anna", "lastName":"Smith"},
+						    {id: '3',"firstName":"Peter", "lastName":"Jones"},
+						    {id: '4',"firstName":"Peter1", "lastName":"Jones"},
+						    {id: '5',"firstName":"Peter1", "lastName":"Jones"},
+						    {id: '6',"firstName":"Peter1", "lastName":"Jones"},
+						    {id: '7',"firstName":"Peter1", "lastName":"Jones"},
+						    {id: '8',"firstName":"Peter2", "lastName":"Jones"}
+						]};
+				$scope.processList();
+			});
+
+			$scope.processList = function(){
+				console.log("in processList");
+				var count = 0;
+				if( $scope.data.employees.length > $scope.columnLimit){
+					for(var i = $scope.columnLimit; i < $scope.data.employees.length; i++){
+						$scope.closedTabList.push($scope.data.employees[i]);
+						count ++;
+					}
+						$scope.data.employees.splice($scope.columnLimit, count);
+				}
+
+			};
+
+			$scope.data = {"employees":[
+						    {id: '1',"firstName":"John", "lastName":"Doe"},
+						    {id: '2',"firstName":"Anna", "lastName":"Smith"},
+						    {id: '3',"firstName":"Peter", "lastName":"Jones"},
+						    {id: '4',"firstName":"Peter1", "lastName":"Jones"},
+						    {id: '5',"firstName":"Peter1", "lastName":"Jones"},
+						    {id: '6',"firstName":"Peter1", "lastName":"Jones"},
+						    {id: '7',"firstName":"Peter1", "lastName":"Jones"},
+						    {id: '8',"firstName":"Peter2", "lastName":"Jones"}
+						]};
+
+			$scope.closedTabList = [];
+			$scope.trash = [];
+
+
+			$scope.closedTab= function(index,tab){
+					$scope.closedTabList.push(tab);
+					$scope.data.employees.splice(index, 1);
+			};
+
+			$scope.recoverTab = function(tabToRecover){
+				console.log("lol");
+					if($scope.data.employees.length < $scope.columnLimit){
+						for(var i = 0; i< $scope.closedTabList.length; i++){
+							if($scope.closedTabList[i].id == tabToRecover.id){
+								$scope.data.employees.push($scope.closedTabList[i]);
+								$scope.closedTabList.splice(i, 1);
+							}
+						}
+					}
+
+				}
+
+
+		})
+
+
+
+	</script>
+
+</body>
+</html>
